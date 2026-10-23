@@ -1,0 +1,19 @@
+{
+  "name": "tripeasy-monorepo",
+  "version": "1.0.0",
+  "description": "TripEasy Tourism Management System",
+  "scripts": {
+    "start": "node start.js",
+    "client": "npm --prefix client start",
+    "server": "npm --prefix server start",
+    "build": "npm --prefix client build"
+  },
+  "keywords": [
+    "tripeasy",
+    "react",
+    "express",
+    "tourism"
+  ],
+  "author": "",
+  "license": "ISC"
+}

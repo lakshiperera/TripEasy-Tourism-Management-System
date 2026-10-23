@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Leaflet Map Override ───────────────────────────────────────────── */
+@import "leaflet/dist/leaflet.css";
+
+/* ── Custom Base Styles ─────────────────────────────────────────────── */
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-stone-50 text-stone-900 font-sans antialiased;
+    background-color: #faf9f6;
+    color: #1f1c17;
+  }
+
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f4f1ea;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #a5c3a6;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #58885b;
+  }
+}
+
+/* ── Custom Theme Components (Light Green Modern UI) ───────── */
+@layer components {
+  /* Primary buttons: Modern emerald-green gradient */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-semibold py-2.5 px-5 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md;
+  }
+
+  /* Secondary buttons: Fresh light mint and clean green border */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-emerald-50/90 hover:bg-emerald-100 text-emerald-900 font-semibold py-2.5 px-5 rounded-xl border border-emerald-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 active:scale-95 shadow-sm;
+  }
+
+  /* Outline forest button */
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 bg-transparent hover:bg-emerald-50 text-emerald-800 font-semibold py-2.5 px-5 rounded-xl border-2 border-emerald-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 active:scale-95;
+  }
+
+  /* Danger button */
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold py-2 px-4 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 active:scale-95;
+  }
+
+  /* Card: Crisp white with delicate light-green border and soft modern elevation */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-emerald-100/90 overflow-hidden hover:shadow-card-nature-hover hover:border-emerald-300 transition-all duration-200;
+  }
+
+  .card-stone {
+    @apply bg-stone-50 rounded-2xl border border-emerald-100/80 overflow-hidden;
+  }
+
+  /* Inputs: crisp white with modern light green focus */
+  .input {
+    @apply w-full px-3.5 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white text-stone-900 placeholder:text-stone-400;
+  }
+
+  .label {
+    @apply block text-sm font-semibold text-stone-800 mb-1.5;
+  }
+
+  .section-title {
+    @apply text-2xl sm:text-3xl font-extrabold text-stone-900 tracking-tight;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  }
+}
+
+/* ── Leaflet Custom Styles ──────────────────────────────────────────── */
+.leaflet-container {
+  border-radius: 1rem;
+  font-family: inherit !important;
+  z-index: 10;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 1rem !important;
+  box-shadow: 0 12px 30px rgba(27, 50, 29, 0.2) !important;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 1px solid #e7e2d6;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: white !important;
+}
+
+/* ── Animations ─────────────────────────────────────────────────────── */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: fadeIn 0.4s ease-out;
+}
