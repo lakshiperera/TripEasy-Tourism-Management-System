@@ -1,6 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useItinerary, REFERENCE_POINT } from '../../context/ItineraryContext';
+import {
+  useItinerary,
+  REFERENCE_POINT,
+  getBestVisitTime,
+  computeSchedule,
+  formatScheduleTime,
+  suggestOptimalOrder,
+} from '../../context/ItineraryContext';
 import InteractiveMap from '../../components/tourist/InteractiveMap';
 import {
   FiMapPin,
@@ -11,6 +18,10 @@ import {
   FiShare2,
   FiDollarSign,
   FiPlus,
+  FiZap,
+  FiSunrise,
+  FiNavigation,
+  FiChevronRight,
 } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
@@ -21,7 +32,14 @@ const API_URL = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://lo
  * Styled in Earthy Forest & Outdoor Green theme
  */
 const ItineraryPage = () => {
-  const { items, removeItem, clearItinerary, stats } = useItinerary();
+  const { items, removeItem, clearItinerary, stats, applySuggestedOrder } = useItinerary();
+
+  // Compute per-stop schedule and best-visit times
+  const schedule = computeSchedule(items);
+  const suggestedOrder = suggestOptimalOrder(items);
+  const firstSuggested = suggestedOrder[0];
+  const isAlreadyOptimal =
+    items.length < 2 || (firstSuggested && items[0]?._id === firstSuggested._id);
 
   const formatTime = (minutes) => {
     if (!minutes) return '0m';
@@ -140,19 +158,55 @@ const ItineraryPage = () => {
               <div className="w-8 h-8 rounded-full bg-forest-900 text-stone-50 text-xs font-bold flex items-center justify-center flex-shrink-0 shadow-sm">
                 🏠
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-stone-900">Tour Origin Hub</p>
                 <p className="text-xs text-stone-500">
-                  {REFERENCE_POINT.name} Junction, Gampaha District
+                  {REFERENCE_POINT.name} Junction, Gampaha District · Depart at <strong>8:00 AM</strong>
                 </p>
               </div>
+              <span className="text-[11px] font-semibold text-forest-800 bg-forest-100 border border-forest-200 px-2 py-1 rounded-lg flex-shrink-0">
+                8:00 AM
+              </span>
             </div>
+
+            {/* Smart Suggestion Banner */}
+            {items.length >= 2 && (
+              <div className={`rounded-xl border px-4 py-3 flex items-start gap-3 ${isAlreadyOptimal ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'}`}>
+                <span className="text-xl flex-shrink-0 mt-0.5">{isAlreadyOptimal ? '✅' : '💡'}</span>
+                <div className="flex-1 min-w-0">
+                  {isAlreadyOptimal ? (
+                    <>
+                      <p className="text-xs font-bold text-emerald-800">Route is Optimised!</p>
+                      <p className="text-[11px] text-emerald-700 mt-0.5">
+                        Your current order follows the best route — starting with <strong>{items[0]?.name}</strong>.
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-xs font-bold text-amber-800">Suggested Starting Point</p>
+                      <p className="text-[11px] text-amber-700 mt-0.5">
+                        Start with <strong>{firstSuggested?.name}</strong> for a more efficient route — closer to Ragama and best visited early.
+                      </p>
+                      <button
+                        onClick={applySuggestedOrder}
+                        className="mt-2 text-[11px] font-bold text-white bg-amber-500 hover:bg-amber-600 transition-colors px-3 py-1 rounded-lg flex items-center gap-1"
+                      >
+                        <FiZap className="w-3 h-3" />
+                        Apply Smart Order
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Stop cards */}
             <div className="space-y-3">
               {items.map((attraction, index) => {
                 const img = attraction.images?.[0];
                 const imgSrc = img ? `${API_URL}${img.url}` : null;
+                const sched = schedule[index];
+                const bestTime = getBestVisitTime(attraction);
 
                 return (
                   <div
@@ -172,6 +226,22 @@ const ItineraryPage = () => {
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
+                        {/* Arrival time badge */}
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-[11px] font-bold text-white bg-forest-800 px-2 py-0.5 rounded-lg flex items-center gap-1">
+                              <FiNavigation className="w-2.5 h-2.5" />
+                              Arrive {formatScheduleTime(sched.arrivalMinutes)}
+                            </span>
+                            <span className="text-[10px] text-stone-500">
+                              · leave by {formatScheduleTime(sched.departureMinutes)}
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-stone-400">
+                            🚗 {sched.travelMinutes}min drive
+                          </span>
+                        </div>
+
                         <div className="flex gap-3 mb-2">
                           {imgSrc && (
                             <img
@@ -213,7 +283,17 @@ const ItineraryPage = () => {
                             <FiDollarSign className="text-forest-600" />
                             <span>{attraction.entranceFee?.isFree ? 'Free Admission' : 'Ticketed'}</span>
                           </span>
+                          {/* Best visit time chip */}
+                          <span className="flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-800 px-2 py-0.5 rounded-lg font-semibold">
+                            <span>{bestTime.icon}</span>
+                            <span>Best: {bestTime.time}</span>
+                          </span>
                         </div>
+
+                        {/* Best visit time reason */}
+                        <p className="text-[10px] text-stone-400 mt-1.5 italic">
+                          {bestTime.icon} <strong className="text-stone-500">{bestTime.label}:</strong> {bestTime.reason}
+                        </p>
 
                         {/* Remove Action */}
                         <button
