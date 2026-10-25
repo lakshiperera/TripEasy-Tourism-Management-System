@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   useItinerary,
@@ -34,8 +34,17 @@ const API_URL = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://lo
 const ItineraryPage = () => {
   const { items, removeItem, clearItinerary, stats, applySuggestedOrder } = useItinerary();
 
+  // User-selected departure time (default 08:00)
+  const [startTime, setStartTime] = useState('08:00');
+
+  // Convert "HH:MM" string → total minutes from midnight
+  const startMinutes = (() => {
+    const [h, m] = startTime.split(':').map(Number);
+    return h * 60 + m;
+  })();
+
   // Compute per-stop schedule and best-visit times
-  const schedule = computeSchedule(items);
+  const schedule = computeSchedule(items, startMinutes);
   const suggestedOrder = suggestOptimalOrder(items);
   const firstSuggested = suggestedOrder[0];
   const isAlreadyOptimal =
@@ -149,11 +158,11 @@ const ItineraryPage = () => {
               </div>
               <p className="text-xs text-stone-300 mt-4 text-center">
                 Departure point: <strong className="text-white">{REFERENCE_POINT.name} Hub</strong>{' '}
-                · Drive speed computed at ~30 km/h average
+                · Departs <strong className="text-white">{formatScheduleTime(startMinutes)}</strong> · ~30 km/h avg
               </p>
             </div>
 
-            {/* Starting Point Banner */}
+            {/* Starting Point Banner with time picker */}
             <div className="flex items-center gap-3 px-4 py-3 bg-stone-100 border border-stone-200 rounded-xl">
               <div className="w-8 h-8 rounded-full bg-forest-900 text-stone-50 text-xs font-bold flex items-center justify-center flex-shrink-0 shadow-sm">
                 🏠
@@ -161,12 +170,20 @@ const ItineraryPage = () => {
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold text-stone-900">Tour Origin Hub</p>
                 <p className="text-xs text-stone-500">
-                  {REFERENCE_POINT.name} Junction, Gampaha District · Depart at <strong>8:00 AM</strong>
+                  {REFERENCE_POINT.name} Junction · Set your departure time:
                 </p>
               </div>
-              <span className="text-[11px] font-semibold text-forest-800 bg-forest-100 border border-forest-200 px-2 py-1 rounded-lg flex-shrink-0">
-                8:00 AM
-              </span>
+              {/* Departure time picker */}
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <FiClock className="text-forest-700 w-3.5 h-3.5" />
+                <input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  className="text-xs font-bold text-forest-900 bg-white border border-forest-300 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-forest-400 cursor-pointer"
+                  title="Set your departure time from Ragama"
+                />
+              </div>
             </div>
 
             {/* Smart Suggestion Banner */}

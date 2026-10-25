@@ -103,12 +103,13 @@ export const suggestOptimalOrder = (items) => {
 };
 
 /**
- * Computes a scheduled arrival & departure time for each itinerary item,
- * starting departure from Ragama at TOUR_START_HOUR (8:00 AM).
- * Returns array of { arrivalMinutes, departureMinutes, travelMinutes } for each stop.
+ * Computes a scheduled arrival & departure time for each itinerary item.
+ * @param {Array} items - Itinerary attractions
+ * @param {number} startMinutes - Minutes from midnight for departure (default 8:00 AM = 480)
+ * Returns array of { arrivalMinutes, departureMinutes, travelMinutes, distKm } for each stop.
  */
-export const computeSchedule = (items) => {
-  let currentMinutes = TOUR_START_HOUR * 60; // start at 8:00 AM
+export const computeSchedule = (items, startMinutes = TOUR_START_HOUR * 60) => {
+  let currentMinutes = startMinutes;
   let currentLat = REFERENCE_POINT.lat;
   let currentLng = REFERENCE_POINT.lng;
 
