@@ -167,7 +167,12 @@
         "Meditation hall",
         "Museum"
       ],
-      "isActive": true
+      "isActive": true,
+      "contactInfo": {
+        "phone": "",
+        "website": ""
+      },
+      "updatedAt": "2026-10-25T14:55:18.988Z"
     },
     {
       "_id": "662651000000000000000003",
@@ -454,7 +459,7 @@
     },
     {
       "_id": "662651000000000000000008",
-      "name": "Kiththa Restaurant",
+      "name": "Kiththa Resta",
       "slug": "kiththa-restaurant",
       "category": "662650000000000000000006",
       "description": "A high-demand family and group dining destination serving over 100 dishes spanning Sri Lankan, Chinese, Thai, and Western cuisines. Features an air-conditioned banquet hall, a lush outdoor garden, and live music on weekends. A perfect dining stop during your Gampaha day tour.",
@@ -485,7 +490,7 @@
       },
       "openingHours": {
         "weekdays": "11:00 AM – 11:00 PM",
-        "weekends": "11:00 AM – 11:00 PM",
+        "weekends": "11:00 AM – 12:00 PM",
         "notes": "Live music on weekends"
       },
       "entranceFee": {
@@ -516,7 +521,8 @@
       "contactInfo": {
         "phone": "+94 11 295 8899"
       },
-      "isActive": true
+      "isActive": true,
+      "updatedAt": "2026-10-25T15:11:31.044Z"
     },
     {
       "_id": "662651000000000000000009",

@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 const ItineraryContext = createContext(null);
 
 // Reference point: Ragama
-export const REFERENCE_POINT = { lat: 7.0305, lng: 79.9897, name: 'Ragama' };
+export const REFERENCE_POINT = { lat: 7.0305, lng: 79.9217, name: 'Ragama' };
 const DEFAULT_VISIT_DURATION = 45; // minutes per attraction
 
 /**
